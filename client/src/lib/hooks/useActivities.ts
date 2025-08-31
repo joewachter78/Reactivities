@@ -3,10 +3,10 @@ import agent from "../agent";
 import { useLocation } from "react-router";
 
 export const useActivities = (id?: string) => {
-    const queryClient = useQueryClient();
-    const location = useLocation();
+  const queryClient = useQueryClient();
+  const location = useLocation();
 
- const {data: activities, isPending} = useQuery({
+  const { data: activities, isPending } = useQuery({
     queryKey: ['activities'],
     queryFn: async () => {
       const response = await agent.get<Activity[]>('/activities');
@@ -15,46 +15,46 @@ export const useActivities = (id?: string) => {
     enabled: !id && location.pathname === '/activities'
   });
 
-  const {data: activity, isLoading: IsLoadingActivity} = useQuery({
+  const { data: activity, isLoading: IsLoadingActivity } = useQuery({
     queryKey: ['activities', id],
     queryFn: async () => {
-        const response = await agent.get<Activity>(`/activities/${id}`);
-        return response.data;
+      const response = await agent.get<Activity>(`/activities/${id}`);
+      return response.data;
     },
     enabled: !!id
   })
 
   const updateActivity = useMutation({
     mutationFn: async (activity: Activity) => {
-        await agent.put('/activities', activity)
+      await agent.put('/activities', activity)
     },
     onSuccess: async () => {
-        await queryClient.invalidateQueries({
-            queryKey: ['activities']
-        })
+      await queryClient.invalidateQueries({
+        queryKey: ['activities']
+      })
     }
   })
 
   const deleteActivity = useMutation({
     mutationFn: async (id: string) => {
-        await agent.delete(`/activities/${id}`)
+      await agent.delete(`/activities/${id}`)
     },
     onSuccess: async () => {
-        await queryClient.invalidateQueries({
-            queryKey: ['activities']
-        })
+      await queryClient.invalidateQueries({
+        queryKey: ['activities']
+      })
     }
   })
 
   const createActivity = useMutation({
     mutationFn: async (activity: Activity) => {
-        const response = await agent.post('/activities', activity);
-        return response.data;
+      const response = await agent.post('/activities', activity);
+      return response.data;
     },
     onSuccess: async () => {
-        await queryClient.invalidateQueries({
-            queryKey: ['activities']
-        })
+      await queryClient.invalidateQueries({
+        queryKey: ['activities']
+      })
     }
   })
 
